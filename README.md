@@ -1,7 +1,7 @@
 # ETL Assignment: Stored Procedure
 
 ## Objective:
-Design a stored procedure to transfer data from a transactional database to a staging area, then load it into a data warehouse (DWH), distinguishing between fact and dimension tables and datamart.
+Design a stored procedure to transfer data from a transactional database to a staging area, then load it into a data warehouse (fact and dimension tables), and datamart.
 
 ## Requirements:
 - Basic understanding of SQL
