@@ -68,6 +68,3 @@ END;
 - Correctness and completeness of the stored procedure.
 - Documentation quality and clarity.
 - Adherence to best practices in SQL development.
-```
-
-This Markdown document outlines the assignment, providing students with clear instructions on what is expected of them. They are required to design and implement a stored procedure to transfer data from a transactional database to a data warehouse, along with proper documentation and submission guidelines.
