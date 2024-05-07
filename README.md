@@ -8,7 +8,7 @@ Design a stored procedure to transfer data from a transactional database to a st
 - Access to a database management system (DBMS) such as PostgreSQL, etc.
 
 ## Task:
-Design a stored procedure named `TransferDataToDWH` to perform the following tasks:
+Design a stored procedure named `dwh.generate_sales()` to perform the following tasks:
 1. Transfer data from the transactional database tables to corresponding staging tables.
 2. Load data from staging tables into appropriate dimension tables in the data warehouse.
 3. Load data from staging tables into appropriate fact tables in the data warehouse.
