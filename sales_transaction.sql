@@ -1,4 +1,44 @@
-﻿-- public.sales_transaction definition
+-- Check if the schema exists, if not, create it
+DO
+$$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.schemata
+        WHERE schema_name = 'stg'
+    ) THEN
+        CREATE SCHEMA stg;
+    END IF;
+END
+$$;
+
+DO
+$$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.schemata
+        WHERE schema_name = 'dwh'
+    ) THEN
+        CREATE SCHEMA dwh;
+    END IF;
+END
+$$;
+
+DO
+$$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.schemata
+        WHERE schema_name = 'dm'
+    ) THEN
+        CREATE SCHEMA dm;
+    END IF;
+END
+$$;
+
+-- public.sales_transaction definition
 
 -- Drop table
 
