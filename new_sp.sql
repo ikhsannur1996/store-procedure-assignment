@@ -80,10 +80,7 @@ BEGIN
         transaction_status VARCHAR(50),
         shipping_method VARCHAR(50),
         last_update TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (store_id) REFERENCES dwh.dim_store(store_id),
-        FOREIGN KEY (user_id) REFERENCES dwh.dim_user(user_id),
-        FOREIGN KEY (product_id) REFERENCES dwh.dim_product(product_id)
-    );
+        );
 
     INSERT INTO dwh.fact_sales (sale_id, store_id, user_id, product_id, quantity, total_price, payment_method, transaction_status, shipping_method, last_update)
     SELECT
