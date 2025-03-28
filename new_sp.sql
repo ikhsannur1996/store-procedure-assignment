@@ -79,7 +79,7 @@ BEGIN
         payment_method VARCHAR(50),
         transaction_status VARCHAR(50),
         shipping_method VARCHAR(50),
-        last_update TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        last_update TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
 
     INSERT INTO dwh.fact_sales (sale_id, store_id, user_id, product_id, quantity, total_price, payment_method, transaction_status, shipping_method, last_update)
