@@ -5,33 +5,12 @@ AS $procedure$
 BEGIN
     -- Step 1: Truncate and Insert into Staging (stg)
     -- Description: Clear the staging table and populate it with data from the source table.
+        -- Step 1: Truncate and Insert into stg
+    -- Description: Clear the staging table and populate it with data from the source table.
+    CREATE TABLE IF NOT EXISTS stg.stg_sales_transaction AS SELECT *, CURRENT_TIMESTAMP AS last_update FROM public.sales_transaction;
     TRUNCATE TABLE stg.stg_sales_transaction;
     INSERT INTO stg.stg_sales_transaction 
-    SELECT 
-        transaction_id,
-        transaction_time,
-        user_id,
-        user_name,
-        user_email,
-        user_phone,
-        user_gender,
-        user_age,
-        user_city,
-        store_id,
-        store_name,
-        store_phone,
-        store_city,
-        product_id,
-        product_name,
-        product_category,
-        product_price,
-        quantity,
-        total_price,
-        payment_method,
-        transaction_status,
-        shipping_method,
-        CURRENT_TIMESTAMP AS last_update
-    FROM public.synthetic_transactions_with_cities_only;
+    SELECT *, CURRENT_TIMESTAMP AS last_update FROM public.sales_transaction;
 
     -- Step 2: Insert or Update into Dim_Product
     -- Description: Insert new product data into the product dimension if they don't already exist.
