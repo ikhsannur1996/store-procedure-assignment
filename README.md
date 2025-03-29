@@ -8,14 +8,14 @@ Design a stored procedure to transfer data from a transactional database to a st
 - Access to a database management system (DBMS) such as PostgreSQL, etc.
 
 ## Task:
-Design a stored procedure named `dwh.generate_sales()` to perform the following tasks:
+Design a stored procedure named `dwh.generate_ecommerce_transaction()` to perform the following tasks:
 1. Transfer data from the transactional database tables to corresponding staging tables.
 2. Load data from staging tables into appropriate dimension tables in the data warehouse.
 3. Load data from staging tables into appropriate fact tables in the data warehouse.
 5. Provide clear documentation within the stored procedure.
 
 ## Submission Guidelines:
-1. **Stored Procedure Script:** Include the SQL script containing the stored procedure `dwh.generate_sales()`. This script should encompass all necessary steps for transferring data from the transactional database to the staging area, loading it into the data warehouse's dimension and fact tables, and finally, into the datamart.
+1. **Stored Procedure Script:** Include the SQL script containing the stored procedure `dwh.generate_ecommerce_transaction()`. This script should encompass all necessary steps for transferring data from the transactional database to the staging area, loading it into the data warehouse's dimension and fact tables, and finally, into the datamart.
 
 2. **Slide Presentation:** Create a slide presentation to accompany the stored procedure. Each slide should focus on explaining a specific step of the procedure, detailing its significance, execution process, and impact on the overall ETL workflow. Ensure the slides are clear, concise, and visually appealing to facilitate understanding.
 
@@ -46,7 +46,7 @@ By adhering to these submission guidelines, you will provide a comprehensive ove
 
 ## Slide 4: Designing the Stored Procedure
 - Topic: Purpose of the Stored Procedure
-- Point: Explain the objective of the `dwh.generate_sales()` stored procedure.
+- Point: Explain the objective of the `dwh.generate_ecommerce_transaction()` stored procedure.
 - Point: Outline the tasks it performs: data transfer, loading into dimension and fact tables, and documentation.
 
 ## Slide 5: Step 1: Transfer to Staging Tables
