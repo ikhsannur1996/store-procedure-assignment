@@ -232,6 +232,14 @@ BEGIN
 	-- Automation: Inserting New Data
        --
 
+    -- Step 14: Additional DM (rename to your datamart)
+	-- Automation: Create Table
+	   --
+	-- Automation: Truncate --> SCD Type 1
+       --
+	-- Automation: Inserting New Data
+       --
+
 END;
 $procedure$
 ;
