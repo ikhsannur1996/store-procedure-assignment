@@ -39,7 +39,7 @@ END
 $$;
 
 
-CREATE TABLE public.sales_transction (
+CREATE TABLE public.ecommerce_transction (
 	transaction_id int4 NULL,
 	transaction_time information_schema."time_stamp" NULL,
 	user_id int4 NULL,
