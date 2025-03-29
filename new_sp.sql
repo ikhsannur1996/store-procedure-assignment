@@ -1,3 +1,5 @@
+-- DROP PROCEDURE dwh.generate_ecommerce_transaction();
+
 CREATE OR REPLACE PROCEDURE dwh.generate_ecommerce_transaction()
  LANGUAGE plpgsql
 AS $procedure$
@@ -193,7 +195,7 @@ BEGIN
     -- Step 10: Refresh Data in Most Transactions by Date Data Mart
     -- Automation: Create Table
 	CREATE TABLE IF NOT EXISTS dm.dm_most_transaction_date AS
-	SELECT transaction_date, COUNT(*) AS total_transactions
+	SELECT transaction_date, COUNT(*) AS total_transactions, CURRENT_TIMESTAMP AS last_update
     FROM dm.dm_cube_ecommerce_transaction
     GROUP BY transaction_date
     ORDER BY total_transactions DESC;
@@ -203,7 +205,7 @@ BEGIN
 	
 	-- Automation: Inserting New Data
     INSERT INTO dm.dm_most_transaction_date 
-    SELECT transaction_date, COUNT(*) AS total_transactions
+    SELECT transaction_date, COUNT(*) AS total_transactions,CURRENT_TIMESTAMP AS last_update
     FROM dm.dm_cube_ecommerce_transaction
     GROUP BY transaction_date
     ORDER BY total_transactions DESC;
@@ -217,6 +219,14 @@ BEGIN
        --
 
     -- Step 12: Total Quantity by Product ID and Store ID 
+	-- Automation: Create Table
+	   --
+	-- Automation: Truncate --> SCD Type 1
+       --
+	-- Automation: Inserting New Data
+       --
+
+    -- Step 13: A freely created datamart (Rename based your datamart)
 	-- Automation: Create Table
 	   --
 	-- Automation: Truncate --> SCD Type 1
