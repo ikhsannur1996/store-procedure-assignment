@@ -3,15 +3,13 @@ LANGUAGE plpgsql
 AS $procedure$
 BEGIN
     -- Step 1: Load Data into Staging (stg)
-    -- Description: Ensure the staging table exists, clear previous data, and load fresh data from the source.
     CREATE TABLE IF NOT EXISTS stg.stg_ecommerce_transaction AS 
-    SELECT *, CURRENT_TIMESTAMP AS last_update FROM public.ecommerce_transaction;
+    SELECT *, CURRENT_TIMESTAMP AS last_update FROM public.ecommerce_transction;
     TRUNCATE TABLE stg.stg_ecommerce_transaction;
     INSERT INTO stg.stg_ecommerce_transaction 
-    SELECT *, CURRENT_TIMESTAMP AS last_update FROM public.ecommerce_transaction;
+    SELECT *, CURRENT_TIMESTAMP AS last_update FROM public.ecommerce_transction;
 
     -- Step 2: Load Data into Dim_Product
-    -- Description: Ensure the product dimension table exists, clear outdated records, and insert updated product details.
     CREATE TABLE IF NOT EXISTS dwh.dim_ecommerce_product (
         product_id INT PRIMARY KEY,
         product_name VARCHAR(255),
@@ -25,7 +23,6 @@ BEGIN
     FROM stg.stg_ecommerce_transaction AS src;
 
     -- Step 3: Load Data into Dim_Store
-    -- Description: Ensure the store dimension table exists, clear outdated records, and insert updated store details.
     CREATE TABLE IF NOT EXISTS dwh.dim_ecommerce_store (
         store_id INT PRIMARY KEY,
         store_name VARCHAR(255),
@@ -39,7 +36,6 @@ BEGIN
     FROM stg.stg_ecommerce_transaction AS src;
 
     -- Step 4: Load Data into Dim_User
-    -- Description: Ensure the user dimension table exists, clear outdated records, and insert updated user details.
     CREATE TABLE IF NOT EXISTS dwh.dim_ecommerce_user (
         user_id INT PRIMARY KEY,
         user_name VARCHAR(255),
@@ -56,9 +52,9 @@ BEGIN
     FROM stg.stg_ecommerce_transaction AS src;
 
     -- Step 5: Load Data into Fact_Sales
-    -- Description: Ensure the sales fact table exists and insert new transactions that do not already exist.
     CREATE TABLE IF NOT EXISTS dwh.fact_ecommerce_transaction (
         sale_id INT PRIMARY KEY,
+        transaction_time TIMESTAMP,
         store_id INT,
         user_id INT,
         product_id INT,
@@ -69,9 +65,10 @@ BEGIN
         shipping_method VARCHAR(50),
         last_update TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
-    INSERT INTO dwh.fact_ecommerce_transaction (sale_id, store_id, user_id, product_id, quantity, total_price, payment_method, transaction_status, shipping_method, last_update)
+    INSERT INTO dwh.fact_ecommerce_transaction (sale_id, transaction_time, store_id, user_id, product_id, quantity, total_price, payment_method, transaction_status, shipping_method, last_update)
     SELECT
         src.transaction_id AS sale_id,
+        src.transaction_time,
         src.store_id,
         src.user_id,
         src.product_id,
@@ -87,11 +84,11 @@ BEGIN
         WHERE fact.sale_id = src.transaction_id
     );
 
-    -- Step 6: Create Data Mart View (vw_dm_ecommerce_transaction)
-    -- Description: Create a view that consolidates data for reporting and analytics.
-    CREATE OR REPLACE VIEW dm.vw_dm_ecommerce_transaction AS 
+    -- Step 6: Create Data Mart View (vw_dm_cube_ecommerce_transaction)
+    CREATE OR REPLACE VIEW dm.vw_dm_cube_ecommerce_transaction AS 
     SELECT 
         fs.sale_id,
+        fs.transaction_time,
         fs.store_id,
         ds.store_name,
         ds.store_city,
@@ -117,24 +114,40 @@ BEGIN
     LEFT JOIN 
         dwh.dim_ecommerce_product dp ON fs.product_id = dp.product_id;
 
-    -- Step 7: Load Data into Data Mart Table (dm_ecommerce_transaction)
-    -- Description: Ensure the data mart table exists and insert the latest sales transactions.
-    CREATE TABLE IF NOT EXISTS dm.dm_ecommerce_transaction AS
+    -- Step 7: Ccreate Data Mart Cube Table
+    CREATE TABLE IF NOT EXISTS dm.dm_cube_ecommerce_transaction AS
     SELECT * FROM (
         SELECT *, ROW_NUMBER() OVER (PARTITION BY sale_id ORDER BY last_update DESC) AS flag_unique
-        FROM dm.vw_dm_ecommerce_transaction
+        FROM dm.vw_dm_cube_ecommerce_transaction
     ) AS ranked_data
     WHERE flag_unique = 1;
 
-    -- Step 8: Refresh Data in Data Mart Table
+    -- Step 8: Refresh Data in Data Mart Cube Table
     -- Description: Remove old data and insert the latest transactions.
-    TRUNCATE TABLE dm.dm_ecommerce_transaction;
-    INSERT INTO dm.dm_ecommerce_transaction 
+    TRUNCATE TABLE dm.dm_cube_ecommerce_transaction;
+    INSERT INTO dm.dm_cube_ecommerce_transaction 
     SELECT * FROM (
         SELECT *, ROW_NUMBER() OVER (PARTITION BY sale_id ORDER BY last_update DESC) AS flag_unique
-        FROM dm.vw_dm_ecommerce_transaction
+        FROM dm.vw_dm_cube_ecommerce_transaction
     ) AS ranked_data
     WHERE flag_unique = 1;
+
+    -- Step 9: Create Data Mart for Most Transactions by Date
+    CREATE TABLE IF NOT EXISTS dm.dm_most_transaction_date AS 
+    SELECT transaction_time::DATE AS transaction_date, COUNT(*) AS total_transactions
+    FROM dm.dm_cube_ecommerce_transaction
+    GROUP BY transaction_time::DATE
+    ORDER BY total_transactions DESC;
+    TRUNCATE TABLE dm.dm_most_transaction_date;
+    INSERT INTO dm.dm_most_transaction_date 
+    SELECT transaction_time::DATE, COUNT(*)
+    FROM dm.dm_cube_ecommerce_transaction
+    GROUP BY transaction_time::DATE
+    ORDER BY COUNT(*) DESC;
+
+    -- Step 10: ----
+    -- Step 11: ----
+    -- Step 12: ----
 
 END;
 $procedure$;
