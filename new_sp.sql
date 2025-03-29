@@ -1,13 +1,11 @@
--- DROP PROCEDURE dwh.generate_ecommerce_transaction();
-
 CREATE OR REPLACE PROCEDURE dwh.generate_ecommerce_transaction()
  LANGUAGE plpgsql
 AS $procedure$
 BEGIN
     -- Step 1: Load Data into Staging (stg)
     CREATE TABLE IF NOT EXISTS stg.stg_ecommerce_transaction AS 
-    SELECT *, CURRENT_TIMESTAMP AS last_update FROM public.ecommerce_transaction;  -- Corrected typo in table name
-    TRUNCATE TABLE stg.stg_ecommerce_transaction;  -- Ensure truncation is done after table creation
+    SELECT *, CURRENT_TIMESTAMP AS last_update FROM public.ecommerce_transaction; 
+    TRUNCATE TABLE stg.stg_ecommerce_transaction;
     INSERT INTO stg.stg_ecommerce_transaction 
     SELECT *, CURRENT_TIMESTAMP AS last_update FROM public.ecommerce_transaction;
 
@@ -23,7 +21,7 @@ BEGIN
     INSERT INTO dwh.dim_ecommerce_product (product_id, product_name, product_category, product_price, last_update)
     SELECT src.product_id, src.product_name, src.product_category, src.product_price, CURRENT_TIMESTAMP
     FROM stg.stg_ecommerce_transaction AS src
-    GROUP BY src.product_id, src.product_name, src.product_category, src.product_price;  -- Ensure unique records
+    GROUP BY src.product_id, src.product_name, src.product_category, src.product_price;
 
     -- Step 3: Load Data into Dim_Store
     CREATE TABLE IF NOT EXISTS dwh.dim_ecommerce_store (
@@ -37,7 +35,7 @@ BEGIN
     INSERT INTO dwh.dim_ecommerce_store (store_id, store_name, store_phone, store_city, last_update)
     SELECT src.store_id, src.store_name, src.store_phone, src.store_city, CURRENT_TIMESTAMP
     FROM stg.stg_ecommerce_transaction AS src
-    GROUP BY src.store_id, src.store_name, src.store_phone, src.store_city;  -- Ensure unique records
+    GROUP BY src.store_id, src.store_name, src.store_phone, src.store_city; 
 
     -- Step 4: Load Data into Dim_User
     CREATE TABLE IF NOT EXISTS dwh.dim_ecommerce_user (
@@ -54,7 +52,7 @@ BEGIN
     INSERT INTO dwh.dim_ecommerce_user (user_id, user_name, user_email, user_phone, user_gender, user_age, user_city, last_update)
     SELECT src.user_id, src.user_name, src.user_email, src.user_phone, src.user_gender, src.user_age, src.user_city, CURRENT_TIMESTAMP
     FROM stg.stg_ecommerce_transaction AS src
-    GROUP BY src.user_id, src.user_name, src.user_email, src.user_phone, src.user_gender, src.user_age, src.user_city;  -- Ensure unique records
+    GROUP BY src.user_id, src.user_name, src.user_email, src.user_phone, src.user_gender, src.user_age, src.user_city;  
 
     -- Step 5: Load Data into Fact_Sales
     CREATE TABLE IF NOT EXISTS dwh.fact_ecommerce_transaction (
@@ -200,10 +198,10 @@ BEGIN
     GROUP BY transaction_date
     ORDER BY total_transactions DESC;
 	
-	-- Automation: Truncate --> SCD Type 1
-	TRUNCATE TABLE dm.dm_most_transaction_date;
+    -- Automation: Truncate --> SCD Type 1
+    TRUNCATE TABLE dm.dm_most_transaction_date;
 	
-	-- Automation: Inserting New Data
+    -- Automation: Inserting New Data
     INSERT INTO dm.dm_most_transaction_date 
     SELECT transaction_date, COUNT(*) AS total_transactions,CURRENT_TIMESTAMP AS last_update
     FROM dm.dm_cube_ecommerce_transaction
@@ -218,7 +216,7 @@ BEGIN
 	-- Automation: Inserting New Data
        --
 
-    -- Step 12: Total Quantity by Product ID and Store ID 
+    -- Step 12: Total Quantity by Product ID
 	-- Automation: Create Table
 	   --
 	-- Automation: Truncate --> SCD Type 1
@@ -226,7 +224,7 @@ BEGIN
 	-- Automation: Inserting New Data
        --
 
-    -- Step 13: A freely created datamart (Rename based your datamart)
+    -- Step 13: Total Quantity by  Store ID 
 	-- Automation: Create Table
 	   --
 	-- Automation: Truncate --> SCD Type 1
