@@ -66,7 +66,7 @@ CREATE TABLE public.ecommerce_transction (
 
 
 
-INSERT INTO public.sales_transaction (transaction_id,transaction_time,user_id,user_name,user_email,user_phone,user_gender,user_age,user_city,store_id,store_name,store_phone,store_city,product_id,product_name,product_category,product_price,quantity,total_price,payment_method,transaction_status,shipping_method) VALUES
+INSERT INTO public.ecommerce_transction (transaction_id,transaction_time,user_id,user_name,user_email,user_phone,user_gender,user_age,user_city,store_id,store_name,store_phone,store_city,product_id,product_name,product_category,product_price,quantity,total_price,payment_method,transaction_status,shipping_method) VALUES
 	 (1,'2025-01-09 22:16:55+07',71,'Drs. Kasim Wulandari, S.E.I','daniswara98@example.com','(0587) 477 3429','Male',35,'Jakarta',4,'ChicCorner','+62 (0122) 387 6427','Medan',9,'Apple iPad Air','Electronics',849892.1,3,2549676.5,'E-wallet','Canceled',''),
 	 (2,'2025-03-13 01:54:30+07',42,'Kamal Novitasari','ifagunarto@example.net','+62 (427) 468-4798','Female',52,'Palembang',19,'FoodBasket','+62-71-713-9594','Makassar',6,'Canon EOS 90D','Electronics',834437.8,2,1668875.6,'E-wallet','Canceled',''),
 	 (3,'2025-03-17 18:33:50+07',99,'Olga Namaga','wnapitupulu@example.com','+62-0693-797-7198','Female',37,'Yogyakarta',20,'ModeBoutique','+62 (071) 409 8207','Medan',3,'MacBook Pro','Electronics',431212.5,4,1724850.0,'E-wallet','Successful','Standard Shipping'),
